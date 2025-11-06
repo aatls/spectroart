@@ -3,16 +3,19 @@ Proposal for application structure. Feel free to modify & add more modules.
 - - - - - - - - - - - - - - - - - -
 
 - spectroart.py
-Setup
+Setup & start program
 
 - src/ui.py
 Handles user input
+Prints & writes output
 Calls core.py
+Input parameters should be saved here
 
 - src/core.py
-Does application logic. Calls imgtransformer.py and helpers.py etc..
+Does application logic. Calls imageprocessor.py and helpers.py etc..
 
-- src/imgtransformer.py
+- src/imgprocessor.py
+Modifies image data
 Transforms image to audio with parameters from ui
 
 - src/helpers.py
