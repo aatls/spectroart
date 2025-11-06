@@ -4,8 +4,16 @@ Audio to spectrogram converter.
 The program is under construction and does not work!
 
 # Usage instructions
+### Linux
+
 - Clone the repository to your computer
-- Move to the repository
+```
+git clone https://github.com/aatls/spectroart.git
+```
+- Move to the directory
+```
+cd spectroart
+```
 - Install dependencies
 ```
 pip install -r requirements.txt
@@ -14,3 +22,8 @@ pip install -r requirements.txt
 ```
 python3 spectroart.py
 ```
+
+### Windows
+
+Coming soon..
+
