@@ -1,0 +1,19 @@
+Proposal for application structure. Feel free to modify & add more modules.
+
+- - - - - - - - - - - - - - - - - -
+
+- spectroart.py
+Setup
+
+- src/ui.py
+Handles user input
+Calls core.py
+
+- src/core.py
+Does application logic. Calls imgtransformer.py and helpers.py etc..
+
+- src/imgtransformer.py
+Transforms image to audio with parameters from ui
+
+- src/helpers.py
+Random helper functions here
