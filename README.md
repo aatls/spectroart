@@ -1,10 +1,7 @@
 # Spectroart
-Audio to spectrogram converter.
-
-The program is under construction and does not work!
+Image to audio converter.
 
 # Usage instructions
-### Linux
 
 - Clone the repository to your computer
 ```
@@ -22,8 +19,7 @@ pip install -r requirements.txt
 ```
 python3 spectroart.py
 ```
-
-### Windows
-
-Coming soon..
-
+- Now you can look at the programs output with any spectrogram program, for example sox
+```
+sox myoutfile.wav -n spectrogram
+```
