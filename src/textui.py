@@ -60,6 +60,8 @@ Write 'help' if you want some help."""
     def load_image(self):
         self.core.load_image(self.infile)
 
+        print("    Success")
+
     def convert(self):
         if self.outfile == "":
             # converts /path/to/infile.ext to ./infile.wav
