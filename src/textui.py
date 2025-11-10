@@ -1,10 +1,13 @@
-import src.core as core
+from src.core import Core
 
 class TextUi:
     def __init__(self):
+        self.core = Core()
+
         # Input parameters should be saved here
         self.infile = None
         self.outfile = None
+        self.samplerate = 44100 # Default
 
     def start(self):
         greetings = """
@@ -55,14 +58,17 @@ Write 'help' if you want some help."""
         print(help_msg)
 
     def load_image(self):
-        core.load_image(self.infile)
+        self.core.load_image(self.infile)
 
     def convert(self):
         if self.outfile == "":
-            # converts infile.ext to infile.wav
-            self.outfile = self.infile.split('.')[0] + ".wav"
+            # converts /path/to/infile.ext to ./infile.wav
+            self.outfile = self.infile.split('/')[-1]
+            self.outfile = self.outfile.split('.')[0] + ".wav"
 
-        core.convert(self.outfile)
+        self.core.convert(self.outfile, self.samplerate)
+
+        print(    f"Output written to {self.outfile}")
 
     def exit_program(self):
         print("    See you later!")
