@@ -3,6 +3,18 @@ from PIL import Image
 import numpy as np
 
 class ImageProcessor:
+    """Class that handles image manipulation
+    
+    ### Attributes
+    - pixel_data : 2d list of floats
+    - width : int
+    - height : int
+
+    ### Methods
+    - load_image(infile)
+    - generate_audio(samplerate)
+    """
+
     def __init__(self):
         self.pixel_data = None
 
@@ -10,12 +22,22 @@ class ImageProcessor:
         self.height = None
 
     def load_image(self, infile):
+        """Saves given imagefile to the class variables
+        
+        ### Parameters
+        1. infile : str
+        """
         image = Image.open(infile)
         self.pixel_data = image.load()
 
         self.width, self.height = image.size
 
     def generate_audio(self, samplerate):
+        """Generates audio from the saved image
+        
+        ### Parameters
+        1. samplerate : int
+        """
 
         # Window length is 2 x image height because
         # bin[x] = bin[-x] when x < image height
