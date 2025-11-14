@@ -8,6 +8,8 @@ class TextUi:
         self.infile = None
         self.outfile = None
         self.samplerate = 44100 # Default
+        self.min_f = 2000
+        self.max_f = 10000
 
     def start(self):
         greetings = """
@@ -77,7 +79,7 @@ Write 'help' if you want some help."""
             self.outfile = self.infile.split('/')[-1]
             self.outfile = self.outfile.split('.')[0] + ".wav"
 
-        self.core.convert(self.outfile, self.samplerate)
+        self.core.convert(self.outfile, self.samplerate, self.min_f, self.max_f)
 
         print(    f"Output written to {self.outfile}")
 
