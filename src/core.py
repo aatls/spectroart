@@ -10,7 +10,7 @@ class Core:
     def load_image(self, infile):
         self.imgprocessor.load_image(infile)
 
-    def convert(self, outfile, samplerate):
-        data = self.imgprocessor.generate_audio(samplerate)
+    def convert(self, outfile, samplerate, min_f, max_f):
+        data = self.imgprocessor.generate_audio(samplerate, min_f, max_f)
 
         helpers.write_audio(outfile, data, samplerate)
