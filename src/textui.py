@@ -38,6 +38,12 @@ Write 'help' if you want some help."""
                 case "exit":
                     self.exit_program()
 
+                case "test":
+                    self.infile = ".\wayne.jpg"
+                    self.load_image()
+                    self.outfile = "test.wav"
+                    self.convert()
+                    
                 case _:
                     print(f"    '{cmd}' is not a valid command. Type 'help' for list of the commands")
 
@@ -52,6 +58,9 @@ Write 'help' if you want some help."""
     convert:    Converts the image to audio.
                 Saves the result to user specified file or
                 [infile].wav if outfile left blank
+                
+    test:       Runs the program with default testing
+                parameters.            
                 
     exit:       Exit the program."""
 
