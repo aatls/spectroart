@@ -9,6 +9,9 @@ class Core:
 
     def load_image(self, infile):
         self.imgprocessor.load_image(infile)
+        
+    def flip_image(self, xy):
+        self.imgprocessor.flip_image(xy)
 
     def convert(self, outfile, samplerate, min_f, max_f):
         data = self.imgprocessor.generate_audio(samplerate, min_f, max_f)

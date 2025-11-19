@@ -9,15 +9,17 @@ class ImageProcessor:
     - pixel_data : 2d list of floats
     - width : int
     - height : int
-
+    - image : ???
+    
     ### Methods
     - load_image(infile)
+    - flip_image(xy)
     - generate_audio(samplerate)
     """
 
     def __init__(self):
         self.pixel_data = None
-
+        self.image = None
         self.width = None
         self.height = None
 
@@ -28,9 +30,27 @@ class ImageProcessor:
         1. infile : str
         """
         image = Image.open(infile).convert("RGB")
+        # Move pixel data loading to when needed, keep self.image?
         self.pixel_data = image.load()
-
+        self.image = image
         self.width, self.height = image.size
+        
+    def flip_image(self, xy):
+        """Flips the image horizontally (x) or vertically (y) and saves back.
+        
+        
+        ### Parameters
+        1. xy : str        
+        """
+        
+        # Determine flip direction and do it
+        if xy.lower() == "x":
+            self.image = self.image.transpose(Image.FLIP_LEFT_RIGHT)
+        elif xy.lower() == "y":
+            self.image = self.image.transpose(Image.FLIP_TOP_BOTTOM)
+        else:
+            raise ValueError("xy must be 'x' for horizontal or 'y' for vertical flip")
+        self.pixel_data = self.image.load()
 
     def generate_audio(self, samplerate, min_f, max_f):
         """Generates audio from the saved image
@@ -76,9 +96,9 @@ class ImageProcessor:
             row_values = [] # buffer for brightness values of the image row y
             for x in range(self.width):
                 normalized = np.array(self.pixel_data[x, self.height - 1 - y]) / 255
-                normalized *= [0.5, 1.0, 0.25]
-                avg = np.sum(normalized) / 3
-                brightness = avg ** 2
+                normalized *= [0.2126, 0.7152, 0.0722]
+                total = np.sum(normalized)
+                brightness = total ** 2
                 row_values.append(brightness)
             k = int(target_bins_int[y]) # target frequency bin for the row_values
             series[k, :] = row_values # assign values of row_values to row to target frequency bin k

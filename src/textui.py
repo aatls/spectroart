@@ -46,6 +46,9 @@ Write 'help' if you want some help."""
                     self.outfile = "test.wav"
                     self.convert()
                     
+                case "flip":
+                    xy = input("    Type X to flip horizontally Y to flip vertically: ")
+                    self.flip_image(xy)
                 case _:
                     print(f"    '{cmd}' is not a valid command. Type 'help' for list of the commands")
 
@@ -62,7 +65,9 @@ Write 'help' if you want some help."""
                 [infile].wav if outfile left blank
                 
     test:       Runs the program with default testing
-                parameters.            
+                parameters.    
+                
+    flip:       Flips image horizontally or vertically.        
                 
     exit:       Exit the program."""
 
@@ -72,6 +77,11 @@ Write 'help' if you want some help."""
         self.core.load_image(self.infile)
 
         print("    Success")
+        
+    def flip_image(self, xy):
+        self.core.flip_image(xy)
+
+        print("Flipped")
 
     def convert(self):
         if self.outfile == "":
