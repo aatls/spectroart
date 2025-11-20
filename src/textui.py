@@ -1,15 +1,19 @@
-from src.core import Core
+import src.imageprocessor as imageprocessor
+import src.helpers as helpers
 
 class TextUi:
     def __init__(self):
-        self.core = Core()
-
-        # Input parameters should be saved here
+       # Input parameters should be saved here
         self.infile = None
         self.outfile = None
         self.samplerate = 44100 # Default
         self.min_f = 2000
         self.max_f = 10000
+
+        # Data storage
+        self.original_image = None
+        self.modified_image = None
+        self.generated_audio = None
 
     def start(self):
         greetings = """
@@ -74,12 +78,13 @@ Write 'help' if you want some help."""
         print(help_msg)
 
     def load_image(self):
-        self.core.load_image(self.infile)
+        self.original_image = helpers.load_image(self.infile)
+        self.modified_image = self.original_image
 
         print("    Success")
         
     def flip_image(self, xy):
-        self.core.flip_image(xy)
+        self.modified_image = imageprocessor.flip_image(self.modified_image, xy)
 
         print("Flipped")
 
@@ -89,7 +94,9 @@ Write 'help' if you want some help."""
             self.outfile = self.infile.split('/')[-1]
             self.outfile = self.outfile.split('.')[0] + ".wav"
 
-        self.core.convert(self.outfile, self.samplerate, self.min_f, self.max_f)
+        audio = imageprocessor.generate_audio(self.modified_image, self.samplerate, self.min_f, self.max_f)
+
+        helpers.write_audio(self.outfile, audio, self.samplerate)
 
         print(    f"Output written to {self.outfile}")
 

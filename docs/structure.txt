@@ -1,7 +1,3 @@
-Proposal for application structure. Feel free to modify & add more modules.
-
-- - - - - - - - - - - - - - - - - -
-
 - spectroart.py
 Setup & start program
 
@@ -10,13 +6,11 @@ Handles user input
 Prints & writes output
 Calls core.py
 Input parameters should be saved here
-
-- src/core.py
-Does application logic. Calls imageprocessor.py and helpers.py etc..
+App state should be saved here (image, audio, etc..)
 
 - src/imgprocessor.py
 Modifies image data
 Transforms image to audio with parameters from ui
 
 - src/helpers.py
-Random helper functions here
+Random helper functions here, fileIO etc..
