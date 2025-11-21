@@ -43,12 +43,6 @@ Write 'help' if you want some help."""
 
                 case "exit":
                     self.exit_program()
-
-                case "test":
-                    self.infile = ".\wayne.jpg"
-                    self.load_image()
-                    self.outfile = "test.wav"
-                    self.convert()
                     
                 case "flip":
                     xy = input("    Type X to flip horizontally Y to flip vertically: ")
