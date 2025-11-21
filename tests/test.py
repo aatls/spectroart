@@ -4,9 +4,9 @@ def run_tests(ui):
     path_to_img = None
 
     if platform.system() == "Windows":
-        path_to_img = ".\wayne.jpg"
+        path_to_img = r".\tests\wayne.jpg"
     else:
-        path_to_img = "./wayne.jpg"
+        path_to_img = "./tests/wayne.jpg"
 
     print("Testing 'load'..\n")
 
