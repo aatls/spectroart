@@ -1,6 +1,8 @@
 from scipy.signal import ShortTimeFFT
 from PIL import Image
 import numpy as np
+
+import src.helpers as helpers
     
 def flip_image(image, xy):
     """Flips the image horizontally (x) or vertically (y) and returns flipped image.
@@ -21,14 +23,18 @@ def flip_image(image, xy):
     
     return image
 
-def generate_audio(image, samplerate, min_f, max_f):
+def generate_audio(image, samplerate, min_f, max_f, duration=1):
     """Generates audio from the input image
     
     ### Parameters
     1. pixel_data : PIL Image object
     2. samplerate : int
     3. min_f : float
+        - Audio minimum frequency (Hz)
     4. max_f : float
+        - Audio maximum frequency (Hz)
+    5. duration : float
+        - Audio duration in seconds
     """
 
     # Helper functions to make code more readable
@@ -51,7 +57,7 @@ def generate_audio(image, samplerate, min_f, max_f):
         return data
 
     def generate_short_time_fourier_series(image, win_length, min_f, max_f):
-        width, height = np.shape(image)[:2]
+        height, width = np.shape(image)[:2]
 
         n_positive_bins = height
 
@@ -63,16 +69,13 @@ def generate_audio(image, samplerate, min_f, max_f):
         min_bin = np.clip(min_bin, 0, n_positive_bins - 1)
         max_bin = np.clip(max_bin, 0, n_positive_bins - 1)
 
-
         # Ensure all frequencies don't collapse into a single bin.
-
         if min_bin == max_bin:
             if max_bin < n_positive_bins - 1:
                 max_bin = min(min_bin + 1, n_positive_bins - 1)
             else:
                 if min_bin > 0:
                     min_bin = max(min_bin - 1, 0)
-
 
         series = np.zeros((n_positive_bins, width), dtype=float)
 
@@ -82,11 +85,25 @@ def generate_audio(image, samplerate, min_f, max_f):
 
         for y in range(height):
             k = int(target_bins_int[y]) # target frequency bin for the row_values
-            series[k, :] = image[:, y] # assign values of row_values to row to target frequency bin k
+            series[k, :] = image[height - y - 1, :] # assign values of row_values to row to target frequency bin k
 
         return series
 
+    def set_audio_duration(image, duration, samplerate, win_length, overlap=0.5):
+        sample_amount = duration * samplerate
+
+        image_height = np.shape(image)[1]
+        new_image_width = int(sample_amount * overlap)
+
+        output = np.empty((new_image_width, image_height))
+
+        for i in range(image_height):
+            output[:, i] = helpers.resize_array(image[:, i], new_image_width)
+
+        return output
+
     # Convert the pixel data into a numpy array with type 'float'
+    # Pixel array is saved in format [y, x]
     image = np.array(image).astype(float)
 
     # Modify the pixel data
@@ -94,12 +111,13 @@ def generate_audio(image, samplerate, min_f, max_f):
     image = normalize(image, 255, 1)
     image = add_power_contrast(image, 2)
 
-    width, height = np.shape(image)[:2]
+    height, width = np.shape(image)[:2]
 
     # Window length is 2 x image height because
     # bin[x] = bin[-x] when x < image height
     win_length = 2 * height - 1
 
+    # image = set_audio_duration(image, duration, samplerate)
     series = generate_short_time_fourier_series(image, win_length, min_f, max_f)
 
     SFT = ShortTimeFFT(win=np.hanning(win_length),
