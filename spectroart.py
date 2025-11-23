@@ -9,6 +9,6 @@ if __name__ == "__main__":
 
     # Check if program is run with test flag
     if "-t" in sys.argv:
-        test.run_tests(ui) # Run tests
+        test.run_tests(ui, sys.argv) # Run tests
     else:        
         ui.start() # Starts the program

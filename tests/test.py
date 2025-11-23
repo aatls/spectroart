@@ -1,29 +1,29 @@
-import platform
-
-def run_tests(ui):
-    path_to_img = None
-
-    if platform.system() == "Windows":
-        path_to_img = r".\tests\wayne.jpg"
+def run_tests(ui, argv):
+    if argv[-1] != "-t":
+        infiles = argv[argv.index("-t") + 1, :]
     else:
-        path_to_img = "./tests/wayne.jpg"
+        infiles = ["./tests/wayne.jpg", "./tests/loveless.png"]
 
-    print("Testing 'load'..\n")
+    for infile in infiles:
 
-    ui.infile = path_to_img
-    ui.load_image()
+        print("\nTest infile: " + infile + "\n")
 
-    print("\nTesting 'flip'..\n")
+        print("Testing 'load'..\n")
 
-    ui.flip_image("X")
-    ui.flip_image("X")
-    ui.flip_image("Y")
-    ui.flip_image("Y")
+        ui.infile = infile
+        ui.load_image()
 
-    print("\nTesting 'convert'..\n")
+        print("\nTesting 'flip'..\n")
 
-    ui.outfile = "test-result.wav"
-    ui.convert()
+        ui.flip_image("X")
+        ui.flip_image("X")
+        ui.flip_image("Y")
+        ui.flip_image("Y")
+
+        print("\nTesting 'convert'..\n")
+
+        ui.outfile = '.' + infile.split('.')[-2] + "-test-result.wav"
+        ui.convert()
 
     print("\nTesting 'exit'..\n")
 
