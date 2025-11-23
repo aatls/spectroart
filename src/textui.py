@@ -7,8 +7,9 @@ class TextUi:
         self.infile = None
         self.outfile = None
         self.samplerate = 44100 # Default
-        self.min_f = 2000
-        self.max_f = 10000
+        self.min_f = 1000
+        self.max_f = 21000
+        self.audio_duration = 20
 
         # Data storage
         self.original_image = None
@@ -88,7 +89,7 @@ Write 'help' if you want some help."""
             self.outfile = self.infile.split('/')[-1]
             self.outfile = self.outfile.split('.')[0] + ".wav"
 
-        audio = imageprocessor.generate_audio(self.modified_image, self.samplerate, self.min_f, self.max_f)
+        audio = imageprocessor.generate_audio(self.modified_image, self.samplerate, self.min_f, self.max_f, self.audio_duration)
 
         helpers.write_audio(self.outfile, audio, self.samplerate)
 

@@ -90,15 +90,15 @@ def generate_audio(image, samplerate, min_f, max_f, duration=1):
         return series
 
     def set_audio_duration(image, duration, samplerate, win_length, overlap=0.5):
-        sample_amount = duration * samplerate
+        sample_target_amount = duration * samplerate
 
-        image_height = np.shape(image)[1]
-        new_image_width = int(sample_amount * overlap)
+        image_height = np.shape(image)[0]
+        new_image_width = int(np.ceil(sample_target_amount / (win_length * overlap)))
 
-        output = np.empty((new_image_width, image_height))
+        output = np.empty((image_height, new_image_width))
 
         for i in range(image_height):
-            output[:, i] = helpers.resize_array(image[:, i], new_image_width)
+            output[i, :] = helpers.resize_array(image[i, :], new_image_width)
 
         return output
 
@@ -109,15 +109,15 @@ def generate_audio(image, samplerate, min_f, max_f, duration=1):
     # Modify the pixel data
     image = bw_conversion(image, weights=[0.2126, 0.7152, 0.0722])
     image = normalize(image, 255, 1)
-    image = add_power_contrast(image, 2)
+    image = add_power_contrast(image, 2.5)
 
-    height, width = np.shape(image)[:2]
+    height, _ = np.shape(image)[:2]
 
     # Window length is 2 x image height because
     # bin[x] = bin[-x] when x < image height
     win_length = 2 * height - 1
 
-    # image = set_audio_duration(image, duration, samplerate)
+    image = set_audio_duration(image, duration, samplerate, win_length)
     series = generate_short_time_fourier_series(image, win_length, min_f, max_f)
 
     SFT = ShortTimeFFT(win=np.hanning(win_length),
