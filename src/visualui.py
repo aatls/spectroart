@@ -135,6 +135,8 @@ class VisualUi:
 
             self.image = self.image_path.get().replace("{", "").replace("}", "")
             self.set_image(self.image)
+            self.generate_spectrogram()
+            
         else:
             print("No file selected")
 
@@ -159,6 +161,7 @@ class VisualUi:
         self.original_image = helpers.load_image(self.image)
         self.modified_image = self.original_image 
 
+        self.set_image(self.image)
         
         # converts {/path/to/image.ext} to tests/image.wav
         self.outfile = self.image_path.get().split('/')[-1]
@@ -221,3 +224,9 @@ class VisualUi:
             else:
                 button.configure(bg="light gray")
                 button.configure(state="disabled")
+
+    def generate_spectrogram(self):
+        print("is it running?")
+        helpers.spectrogramify(self.outfile, self.min_f, self.max_f)
+        print("We have runned")
+        self.set_image("spectrogram.png")
