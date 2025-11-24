@@ -125,14 +125,14 @@ class VisualUi:
         self.set_output_state(False)
         
 
-
         # Start main loop
         self.root.mainloop()
 
     # ------------------ Methods ------------------
     def on_generate(self):
-        print(f"x={self.flip_x.get()}, y={self.flip_y.get()}, r={self.toggle_r.get()}, g={self.toggle_g.get()}, b={self.toggle_b.get()}")
         if self.image_path.get():
+            print(f"x={self.flip_x.get()}, y={self.flip_y.get()}, r={self.toggle_r.get()}, g={self.toggle_g.get()}, b={self.toggle_b.get()}")
+
             self.image = self.image_path.get().replace("{", "").replace("}", "")
             self.set_image(self.image)
         else:
@@ -143,8 +143,9 @@ class VisualUi:
             self.set_image(img)
 
     def on_convert(self):
-        print("Converting...")
+        
         if self.image_path.get():
+            print("Converting...")
             self.set_output_state(True)
             self.convert()
         else:
@@ -169,12 +170,12 @@ class VisualUi:
 
         helpers.write_audio(self.outfile, audio, self.samplerate)
 
-        print(    f"Output written to {self.outfile}")
+        print(f"Output written to {self.outfile}")
         
 
     def on_play(self):
-        print("Playing...")
         if self.outfile:
+            print("Playing...")
             winsound.PlaySound(self.outfile, winsound.SND_FILENAME | winsound.SND_ASYNC)
         else: 
             print("No audio to play")
@@ -206,14 +207,13 @@ class VisualUi:
 
     def set_image(self, path):
         pil_img = Image.open(path)
-        pil_img = pil_img.resize((400, 300))  # resize :)
+        pil_img = pil_img.resize((400, 300))  # resize always 
         new_img = ImageTk.PhotoImage(pil_img)
 
         self.img_label.config(image=new_img)
         self.img_label.image = new_img
 
     def set_output_state(self, toggle):
-        # self.output_aud_panel.configure(state="disabled")
         for button in [self.audio_play_button, self.audio_stop_button, self.audio_download_button, self.ref_img_button]:
             if toggle:
                 button.configure(bg="SystemButtonFace")
@@ -221,9 +221,3 @@ class VisualUi:
             else:
                 button.configure(bg="light gray")
                 button.configure(state="disabled")
-
-
-
-# Run the app
-# if __name__ == "__main__":
-#     VisualUi()
