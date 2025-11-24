@@ -8,7 +8,7 @@ from tkinterdnd2 import DND_FILES, TkinterDnD
 from PIL import Image, ImageTk
 
 import random
-import winsound
+import sounddevice
 import shutil
 
 
@@ -78,7 +78,7 @@ class VisualUi:
         rect.pack(padx=20, pady=20)
 
 
-        pil_img = Image.open("tests\\wayne.jpg")
+        pil_img = Image.open("./tests/wayne.jpg")
         pil_img = pil_img.resize((400, 300))
         
         img = ImageTk.PhotoImage(pil_img)
@@ -170,6 +170,7 @@ class VisualUi:
 
         audio = imageprocessor.generate_audio(self.modified_image, self.samplerate, self.min_f, self.max_f, self.audio_duration)
 
+        self.generated_audio = audio
 
         helpers.write_audio(self.outfile, audio, self.samplerate)
 
@@ -177,18 +178,15 @@ class VisualUi:
         
 
     def on_play(self):
-        if self.outfile:
+        if self.generated_audio.any():
             print("Playing...")
-            winsound.PlaySound(self.outfile, winsound.SND_FILENAME | winsound.SND_ASYNC)
+            sounddevice.play(self.generated_audio, self.samplerate)
         else: 
             print("No audio to play")
 
     def on_stop(self):
         print("Stopped audio...")
-        if self.outfile:
-            winsound.PlaySound(None, winsound.SND_PURGE)
-        else: 
-            print("No audio to stop")
+        sounddevice.stop()
 
     def on_download(self):
         print("Downloading...")
@@ -219,7 +217,7 @@ class VisualUi:
     def set_output_state(self, toggle):
         for button in [self.audio_play_button, self.audio_stop_button, self.audio_download_button, self.ref_img_button]:
             if toggle:
-                button.configure(bg="SystemButtonFace")
+                button.configure(bg="gray90")
                 button.configure(state="normal")
             else:
                 button.configure(bg="light gray")
