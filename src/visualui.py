@@ -167,15 +167,9 @@ class VisualUi:
         self.outfile = self.image_path.get().split('/')[-1]
         self.outfile = "tests\\" + self.outfile.split('.')[0] + ".wav"
 
-
         audio = imageprocessor.generate_audio(self.modified_image, self.samplerate, self.min_f, self.max_f, self.audio_duration)
 
         self.generated_audio = audio
-
-        helpers.write_audio(self.outfile, audio, self.samplerate)
-
-        print(f"Output written to {self.outfile}")
-        
 
     def on_play(self):
         if self.generated_audio.any():
@@ -190,7 +184,7 @@ class VisualUi:
 
     def on_download(self):
         print("Downloading...")
-        if self.outfile:
+        if self.generated_audio.any():
             save_path = filedialog.asksaveasfilename(
                 defaultextension=".wav",
                 initialfile=self.outfile.split('\\')[-1],
@@ -198,9 +192,7 @@ class VisualUi:
             )
             if save_path: 
                 print("selected: ", save_path)
-                shutil.move(self.outfile, save_path)
-                self.outfile = save_path
-
+                helpers.write_audio(save_path, self.generated_audio, self.samplerate)
         else: 
             print("No audio to download")
 
@@ -225,6 +217,6 @@ class VisualUi:
 
     def generate_spectrogram(self):
         print("is it running?")
-        helpers.spectrogramify(self.outfile, self.min_f, self.max_f)
+        helpers.spectrogramify(self.generated_audio, self.samplerate, self.min_f, self.max_f)
         print("We have runned")
         self.set_image("spectrogram.png")

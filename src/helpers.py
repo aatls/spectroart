@@ -34,10 +34,7 @@ def resize_array(input, new_length):
 
     return output
 
-def spectrogramify(input, min_f, max_f):
-
-    # Load WAV
-    samplerate, data = wavfile.read(input)
+def spectrogramify(data, samplerate, min_f, max_f):
 
     if data.ndim == 2:
         data = data.mean(axis=1)
