@@ -95,6 +95,7 @@ def spectrogramify(data, samplerate, min_f, max_f):
     plt.figure(figsize=(12, 6))
     plt.pcolormesh(times, frequencies_f, Sxx_db_f, shading='gouraud',
                 cmap=audacity_cmap, norm=norm)
+    plt.yscale('log')
     plt.ylim(min_f, max_f)
     plt.xlabel('Time [s]')
     plt.ylabel('Frequency [Hz]')
