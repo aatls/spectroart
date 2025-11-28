@@ -3,14 +3,14 @@ import src.helpers as helpers
 
 import tkinter as tk
 from tkinter import filedialog
+import tkinter.font as tkFont
 
 from tkinterdnd2 import DND_FILES, TkinterDnD
 from PIL import Image, ImageTk
 
 import random
 import sounddevice
-import shutil
-
+import threading
 
 
 class VisualUi:
@@ -32,7 +32,7 @@ class VisualUi:
         # Root window
         self.root = TkinterDnD.Tk()
         self.root.title("Spectroart :D")
-        self.root.minsize(900, 500)
+        self.root.minsize(950, 500)
 
         # Holders
         self.left_holder = tk.Frame(self.root, borderwidth=2, relief="groove", padx=10, pady=10)
@@ -62,15 +62,26 @@ class VisualUi:
         entry.pack(padx=10, pady=10)
 
         # ------------------ Output Audio Panel ------------------
+        self.audio_play_box = tk.Frame(self.output_aud_panel, borderwidth=0, relief="groove")
+        
         tk.Label(self.output_aud_panel, text="Generated audio").pack(pady=5)
 
         self.audio_play_button = tk.Button(self.output_aud_panel, text="Play Audio", command=self.on_play)
         self.audio_stop_button = tk.Button(self.output_aud_panel, text="Stop Audio", command=self.on_stop)
         self.audio_download_button = tk.Button(self.output_aud_panel, text="Download Audio", command=self.on_download)
 
-        self.audio_play_button.pack(pady=5)
-        self.audio_stop_button.pack(pady=5)
+        self.audio_play_box.pack()
+
+        self.loop_audio = tk.IntVar()
+        loop_check = tk.Checkbutton(self.output_aud_panel, text="Loop Audio", variable=self.loop_audio)
+        
+
+        self.audio_play_button.pack(pady=5, padx=5)
+        loop_check.pack(pady=5)
+        self.audio_stop_button.pack(pady=5, padx=5)
         self.audio_download_button.pack(pady=5)
+
+        
 
         # ------------------ Output Image Panel ------------------
         tk.Label(self.output_img_panel, text="Spectrogram").pack(pady=5)
@@ -155,12 +166,12 @@ class VisualUi:
             self.set_image(img)
 
     def on_convert(self):
-        
         if self.image_path.get():
+            self.set_output_state(False)
             print("Converting...", end="\t")
-            self.set_output_state(True)
             self.convert()
             print("Converted!")
+            self.set_output_state(True)
         else:
             print("No file selected")
 
@@ -195,13 +206,26 @@ class VisualUi:
     def on_play(self):
         if self.generated_audio.any():
             print("Playing...")
-            sounddevice.play(self.generated_audio, self.samplerate)
+
+            self.playing_audio = True
+
+            # Threading to not make the audio pause the whole program
+            def worker():
+                    sounddevice.play(self.generated_audio, self.samplerate)
+                    sounddevice.wait()  # blocks only inside this thread
+                    if self.loop_audio.get() and self.playing_audio:
+                        self.on_play() # loop
+            threading.Thread(target=worker, daemon=True).start()
+
+
+            
         else: 
             print("No audio to play")
 
     def on_stop(self):
         print("Stopped audio...")
         sounddevice.stop()
+        self.playing_audio = False
 
     def on_download(self):
         print("Downloading...")
@@ -253,3 +277,8 @@ class VisualUi:
     def on_scale_change(self, value):
         self.scale = value[:3].lower()
         print("Scale set to ", self.scale) 
+
+
+    
+
+
