@@ -21,6 +21,7 @@ class VisualUi:
         self.min_f = 5000
         self.max_f = 21000
         self.audio_duration = 20
+        self.scale = "lin" # 'lin' or 'log'
 
         # Data storage
         self.original_image = None
@@ -168,7 +169,8 @@ class VisualUi:
         self.outfile = self.image_path.get().split('/')[-1]
         self.outfile = "tests\\" + self.outfile.split('.')[0] + ".wav"
 
-        audio = imageprocessor.generate_audio(self.modified_image, self.samplerate, self.min_f, self.max_f, self.audio_duration)
+        audio = imageprocessor.generate_audio(self.modified_image, self.samplerate, self.min_f, self.max_f, self.audio_duration, self.scale)
+        print(self.scale)
 
         self.generated_audio = audio
 
@@ -218,6 +220,6 @@ class VisualUi:
 
     def generate_spectrogram(self):
         print("is it running?")
-        helpers.spectrogramify(self.generated_audio, self.samplerate, self.min_f, self.max_f)
+        helpers.spectrogramify(self.generated_audio, self.samplerate, self.min_f, self.max_f, self.scale)
         print("We have runned")
         self.set_image("spectrogram.png")

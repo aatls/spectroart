@@ -34,7 +34,7 @@ def resize_array(input, new_length):
 
     return output
 
-def spectrogramify(data, samplerate, min_f, max_f):
+def spectrogramify(data, samplerate, min_f, max_f, scale="lin"):
 
     # if data.ndim == 2:
     #     data = data.mean(axis=1)
@@ -93,6 +93,12 @@ def spectrogramify(data, samplerate, min_f, max_f):
     norm = mcolors.Normalize(vmin=-range_db, vmax=0.0)
 
     plt.figure(figsize=(12, 6))
+
+    if scale == "log":
+        plt.yscale("log")
+    elif scale != "lin":
+        ValueError(f"Scale must be 'lin' or 'log' but is '{scale}'")
+
     plt.pcolormesh(times, frequencies_f, Sxx_db_f, shading='gouraud',
                 cmap=audacity_cmap, norm=norm)
     plt.ylim(min_f, max_f)

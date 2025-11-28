@@ -23,7 +23,7 @@ def flip_image(image, xy):
     
     return image
 
-def generate_audio(image, samplerate, min_f, max_f, duration=1):
+def generate_audio(image, samplerate, min_f, max_f, duration=1, scale="lin"):
     """Generates audio from the input image
     
     ### Parameters
@@ -35,6 +35,8 @@ def generate_audio(image, samplerate, min_f, max_f, duration=1):
         - Audio maximum frequency (Hz)
     5. duration : float
         - Audio duration in seconds
+    6. scale : string
+        - Frequency scale for the transformation
     """
 
     # Helper functions to make code more readable
@@ -79,8 +81,14 @@ def generate_audio(image, samplerate, min_f, max_f, duration=1):
 
         series = np.zeros((n_positive_bins, width), dtype=float)
 
-        # Linearly space target frequency bins between min_bin and max_bin
-        target_bins = np.linspace(min_bin, max_bin, num=height)
+        # Space target frequency bins between min_bin and max_bin
+        if scale == "lin":
+            target_bins = np.linspace(min_bin, max_bin, num=height)
+        elif scale == "log":
+            target_bins = np.linspace(min_bin, max_bin, num=height)
+        else:
+            ValueError(f"Scale must be 'lin' or 'log' but is '{scale}'")
+
         target_bins_int = np.round(target_bins).astype(int) # round to nearest integer
 
         for y in range(height):
