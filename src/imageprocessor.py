@@ -59,28 +59,28 @@ def generate_audio(image, samplerate, min_f, max_f, duration=1):
     def generate_short_time_fourier_series(image, win_length, min_f, max_f):
         height, width = np.shape(image)[:2]
 
-        n_positive_bins = height
+        n_bins = height
 
         # Map corresponding FFT bins for min_f and max_f
         min_bin = int(round(min_f * win_length / samplerate))
         max_bin = int(round(max_f * win_length / samplerate))
 
         # Clip values within the set range
-        min_bin = np.clip(min_bin, 0, n_positive_bins - 1)
-        max_bin = np.clip(max_bin, 0, n_positive_bins - 1)
+        min_bin = np.clip(min_bin, 0, n_bins - 1)
+        max_bin = np.clip(max_bin, 0, n_bins - 1)
 
         # Ensure all frequencies don't collapse into a single bin.
         if min_bin == max_bin:
-            if max_bin < n_positive_bins - 1:
-                max_bin = min(min_bin + 1, n_positive_bins - 1)
+            if max_bin < n_bins - 1:
+                max_bin = min(min_bin + 1, n_bins - 1)
             else:
                 if min_bin > 0:
                     min_bin = max(min_bin - 1, 0)
 
-        series = np.zeros((n_positive_bins, width), dtype=float)
+        series = np.zeros((n_bins, width), dtype=float)
 
         # Linearly space target frequency bins between min_bin and max_bin
-        target_bins = np.linspace(min_bin, max_bin, num=height)
+        target_bins = np.logspace(np.log10(min_bin), np.log10(max_bin), num=height)
         target_bins_int = np.round(target_bins).astype(int) # round to nearest integer
 
         for y in range(height):
