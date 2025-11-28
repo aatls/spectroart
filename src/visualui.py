@@ -64,7 +64,7 @@ class VisualUi:
         # ------------------ Output Audio Panel ------------------
         self.audio_play_box = tk.Frame(self.output_aud_panel, borderwidth=0, relief="groove")
         
-        tk.Label(self.output_aud_panel, text="Generated audio").pack(pady=5)
+        tk.Label(self.output_aud_panel, text="Generated Audio").pack(pady=5)
 
         self.audio_play_button = tk.Button(self.output_aud_panel, text="Play Audio", command=self.on_play)
         self.audio_stop_button = tk.Button(self.output_aud_panel, text="Stop Audio", command=self.on_stop)
@@ -99,13 +99,20 @@ class VisualUi:
         self.img_label = tk.Label(rect, image=img)
         self.img_label.pack(expand=True)
 
+        self.spectrogrammify_box = tk.Frame(self.right_holder, borderwidth=0, relief="groove")
+        self.spectrogrammify_box.pack()
+
+        self.ref_img_button = tk.Button(self.spectrogrammify_box, text="Generate Spectrogram", command=self.on_generate)
+        self.ref_img_button.pack(side="left", pady=10)
+
+
+        self.border_toggle = tk.IntVar(value=1)
+        border_check = tk.Checkbutton(self.spectrogrammify_box, text="Plot Border", variable=self.border_toggle)
+        border_check.pack(side="left", pady=5)
 
         # ------------------ Spectrogram Settings ------------------
         self.spectro_settings = tk.Frame(self.left_holder, borderwidth=0, relief="groove")
         # self.spectro_settings.pack()
-
-        self.ref_img_button = tk.Button(self.right_holder, text="Generate spectrogram", command=self.on_generate)
-        self.ref_img_button.pack(pady=10)
 
         tk.Label(self.spectro_settings, text="Flip axis: ").pack(side = "left")
 
@@ -270,7 +277,7 @@ class VisualUi:
 
     def generate_spectrogram(self):
         print("is it running?")
-        helpers.spectrogramify(self.generated_audio, self.samplerate, self.min_f, self.max_f, self.scale)
+        helpers.spectrogramify(self.generated_audio, self.samplerate, self.min_f, self.max_f, self.scale, self.border_toggle.get())
         print("We have runned")
         self.set_image("spectrogram.png")
 
