@@ -104,7 +104,13 @@ def generate_audio(image, samplerate, min_f, max_f, duration=1):
 
     # Convert the pixel data into a numpy array with type 'float'
     # Pixel array is saved in format [y, x]
+
+    # Resizing image
+    width, height = image.size
+    image = image.resize((width, 1024))
+
     image = np.array(image).astype(float)
+    
 
     # Modify the pixel data
     image = bw_conversion(image, weights=[0.2126, 0.7152, 0.0722])

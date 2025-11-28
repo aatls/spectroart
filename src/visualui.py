@@ -18,7 +18,7 @@ class VisualUi:
         # Input parameters should be saved here
         self.outfile = None
         self.samplerate = 44100 # Default
-        self.min_f = 1000
+        self.min_f = 5000
         self.max_f = 21000
         self.audio_duration = 20
 
@@ -89,10 +89,10 @@ class VisualUi:
 
 
         # ------------------ Spectrogram Settings ------------------
-        self.spectro_settings = tk.Frame(self.right_holder, borderwidth=0, relief="groove")
-        self.spectro_settings.pack()
+        self.spectro_settings = tk.Frame(self.left_holder, borderwidth=0, relief="groove")
+        # self.spectro_settings.pack()
 
-        self.ref_img_button = tk.Button(self.spectro_settings, text="Generate spectrogram", command=self.on_generate)
+        self.ref_img_button = tk.Button(self.right_holder, text="Generate spectrogram", command=self.on_generate)
         self.ref_img_button.pack(side="left", pady=10)
 
         # Variables
@@ -117,6 +117,7 @@ class VisualUi:
 
         # Pack inside holders
         self.input_img_panel.pack(padx=10, pady=10, fill="both")
+        self.spectro_settings.pack()
         convert_button.pack(pady=10)
         self.output_aud_panel.pack(padx=10, pady=10, fill="both")
         self.output_img_panel.pack(padx=10, pady=10, expand=True, fill="both")

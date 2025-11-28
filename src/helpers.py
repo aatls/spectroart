@@ -36,8 +36,8 @@ def resize_array(input, new_length):
 
 def spectrogramify(data, samplerate, min_f, max_f):
 
-    if data.ndim == 2:
-        data = data.mean(axis=1)
+    # if data.ndim == 2:
+    #     data = data.mean(axis=1)
         
     # Compute spectrogram
     nperseg = 4096/2
