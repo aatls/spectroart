@@ -34,7 +34,7 @@ def resize_array(input, new_length):
 
     return output
 
-def spectrogramify(data, samplerate, min_f, max_f, scale="lin"):
+def spectrogramify(data, samplerate, min_f, max_f, scale="lin",add_border=True):
 
     # if data.ndim == 2:
     #     data = data.mean(axis=1)
@@ -108,6 +108,26 @@ def spectrogramify(data, samplerate, min_f, max_f, scale="lin"):
     plt.colorbar(label='dB (relative to peak)')
     #save to png
     #plt.yscale('log')  # for log-frequency spectrogram
-    plt.savefig("spectrogram.png", dpi=300, bbox_inches='tight')
+
+    if add_border:
+        # normal spectrogram
+        plt.savefig("spectrogram.png", dpi=300, bbox_inches='tight')
+
+    else:
+        # clean spectrogram
+        plt.figure(figsize=(12, 6))
+
+        if scale == "log":
+            plt.yscale("log")
+
+        plt.pcolormesh(times, frequencies_f, Sxx_db_f, shading='gouraud',
+                       cmap=audacity_cmap, norm=norm)
+
+        plt.ylim(min_f, max_f)
+
+        plt.axis("off")
+        plt.gca().set_frame_on(False)
+
+        plt.savefig("spectrogram.png", dpi=300, bbox_inches='tight', pad_inches=0)
 
     print("runner")
