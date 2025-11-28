@@ -94,7 +94,9 @@ class VisualUi:
         # self.spectro_settings.pack()
 
         self.ref_img_button = tk.Button(self.right_holder, text="Generate spectrogram", command=self.on_generate)
-        self.ref_img_button.pack(side="left", pady=10)
+        self.ref_img_button.pack(pady=10)
+
+        tk.Label(self.spectro_settings, text="Flip axis: ").pack(side = "left")
 
         # Variables
         self.flip_x = tk.IntVar()
@@ -106,12 +108,18 @@ class VisualUi:
         # Checkboxes
         chk1 = tk.Checkbutton(self.spectro_settings, text="X", variable=self.flip_x)
         chk2 = tk.Checkbutton(self.spectro_settings, text="Y", variable=self.flip_y)
-        chk3 = tk.Checkbutton(self.spectro_settings, text="R", variable=self.toggle_r)
-        chk4 = tk.Checkbutton(self.spectro_settings, text="G", variable=self.toggle_g)
-        chk5 = tk.Checkbutton(self.spectro_settings, text="B", variable=self.toggle_b)
 
-        for chk in [chk1, chk2, chk3, chk4, chk5]:
+        for chk in [chk1, chk2]:
             chk.pack(side="left", pady=5)
+
+        tk.Label(self.spectro_settings, text="Scale: ").pack(side = "left")
+
+        options = ["Linear", "Logarithmic"]
+        self.selected_scale = tk.StringVar(value=options[0]) 
+
+        dropdown = tk.OptionMenu(self.spectro_settings, self.selected_scale, *options, command=self.on_scale_change)
+        dropdown.pack(side="right", pady=10)
+
 
         # Convert button
         convert_button = tk.Button(self.left_holder, text="Convert To Audio", command=self.on_convert)
@@ -133,7 +141,7 @@ class VisualUi:
     # ------------------ Methods ------------------
     def on_generate(self):
         if self.image_path.get():
-            print(f"x={self.flip_x.get()}, y={self.flip_y.get()}, r={self.toggle_r.get()}, g={self.toggle_g.get()}, b={self.toggle_b.get()}")
+            print(f"x={self.flip_x.get()}, y={self.flip_y.get()}")
 
             self.image = self.image_path.get().replace("{", "").replace("}", "")
             self.set_image(self.image)
@@ -149,9 +157,10 @@ class VisualUi:
     def on_convert(self):
         
         if self.image_path.get():
-            print("Converting...")
+            print("Converting...", end="\t")
             self.set_output_state(True)
             self.convert()
+            print("Converted!")
         else:
             print("No file selected")
 
@@ -159,11 +168,20 @@ class VisualUi:
 
         self.image = self.image_path.get().replace("{", "").replace("}", "")
         
+        
+
         # load image
         self.original_image = helpers.load_image(self.image)
         self.modified_image = self.original_image 
 
-        self.set_image(self.image)
+        flip_x, flip_y = self.flip_x.get(), self.flip_y.get()
+        if flip_x:
+            self.modified_image = imageprocessor.flip_image(self.modified_image, "x")
+        if flip_y:
+            self.modified_image = imageprocessor.flip_image(self.modified_image, "y")
+
+        # self.set_image(self.image)
+        self.set_pil_image(self.modified_image)
         
         # converts {/path/to/image.ext} to tests/image.wav
         self.outfile = self.image_path.get().split('/')[-1]
@@ -209,6 +227,14 @@ class VisualUi:
         self.img_label.config(image=new_img)
         self.img_label.image = new_img
 
+    def set_pil_image(self, image):
+        image = image.resize((400, 300))  # resize always 
+        new_img = ImageTk.PhotoImage(image)
+
+        self.img_label.config(image=new_img)
+        self.img_label.image = new_img
+
+
     def set_output_state(self, toggle):
         for button in [self.audio_play_button, self.audio_stop_button, self.audio_download_button, self.ref_img_button]:
             if toggle:
@@ -223,3 +249,7 @@ class VisualUi:
         helpers.spectrogramify(self.generated_audio, self.samplerate, self.min_f, self.max_f, self.scale)
         print("We have runned")
         self.set_image("spectrogram.png")
+
+    def on_scale_change(self, value):
+        self.scale = value[:3].lower()
+        print("Scale set to ", self.scale) 
